@@ -305,7 +305,6 @@ fprintf(stderr,"Made it here (%d)!",2);
 		//printf("Compressed block is %d bytes (ratio=%.2f:1, error = %d)\n",bytepos,(double)(4*bx*by*bz)/(double)bytepos,error);
 		//Run_Length_Encode_Fast(mulfac,priv_work,bx*by*bz,priv_compressed,bytepos,error);
 
-		fprintf(stderr,"Made it here (%d)!",3);
 		++(*priv_blkstore_idx);
 		if (error)
 		{
@@ -344,7 +343,7 @@ fprintf(stderr,"Made it here (%d)!",2);
 			priv_blkoff[0] = 0;
 		}
 	}
-	fprintf(stderr,"Made it here (%d)!",4);
+	fprintf(stderr,"Made it here (%d)!",3);
 	for (int thread_id = 0;  thread_id < num_threads;  ++thread_id)
 	{
 		GET_PRIVATE_POINTERS(work,thread_id);
@@ -374,7 +373,7 @@ fprintf(stderr,"Made it here (%d)!",2);
                         priv_blkoff[0] = 0;
 		}
 	}
-	fprintf(stderr,"Made it here (%d)!",5);
+	fprintf(stderr,"Made it here (%d)!",4);
 	compressed_length = 32 + 8*nnn + byte_offset + 7;
 	if (use_local_RMS) compressed_length += 4*nnn;
 
