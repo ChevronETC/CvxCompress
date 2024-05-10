@@ -292,6 +292,10 @@ fprintf(stderr,"Made it here (%d)!",2);
 
 		Copy_To_Block(vol,x0,y0,z0,nx,ny,nz,(__m128*)priv_work,bx,by,bz);
 		Wavelet_Transform_Fast_Forward((__m256*)priv_work,(__m256*)priv_tmp,bx,by,bz);
+		if(iBlk == 0)
+		{
+			fprintf(stderr,"Made it here (%d%s)!",2,"a");
+		}
 		int bytepos = 0, error = 0;
 		float mulfac = glob_mulfac;
 		if (use_local_RMS)
@@ -301,6 +305,10 @@ fprintf(stderr,"Made it here (%d)!",2);
 			blkmulfac[iBlk] = mulfac;
 		}
 		Run_Length_Encode_Slow(mulfac,priv_work,bx*by*bz,priv_compressed,bytepos);
+		if(iBlk == 0)
+		{
+			fprintf(stderr,"Made it here (%d%s)!",2,"b");
+		}
 		error = (bytepos > (4*bx*by*bz)) ? -1 : 0;
 		//printf("Compressed block is %d bytes (ratio=%.2f:1, error = %d)\n",bytepos,(double)(4*bx*by*bz)/(double)bytepos,error);
 		//Run_Length_Encode_Fast(mulfac,priv_work,bx*by*bz,priv_compressed,bytepos,error);
