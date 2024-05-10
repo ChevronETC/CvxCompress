@@ -246,7 +246,7 @@ float CvxCompress::Compress(
 	float glob_mulfac = global_rms != 0.0f ? 1.0f / (global_rms * scale) : 1.0f;
 	compressed[6] = *((unsigned int*)&glob_mulfac);
 
-	fprintf(stderr,"Made it here (%d)!",1);
+	fprintf(stderr,"Made it here (%d)!\n",1);
 
 	// flags:
 	// 1 -> use local RMS (global RMS otherwise)
@@ -268,7 +268,7 @@ float CvxCompress::Compress(
 	}
 	long byte_offset = 0l;
 
-fprintf(stderr,"Made it here (%d)!",2);
+fprintf(stderr,"Made it here (%d)!\n",2);
 #pragma omp parallel for schedule(dynamic)
 	for (long iBlk = 0;  iBlk < nnn;  ++iBlk)
 	{
@@ -294,7 +294,7 @@ fprintf(stderr,"Made it here (%d)!",2);
 		Wavelet_Transform_Fast_Forward((__m256*)priv_work,(__m256*)priv_tmp,bx,by,bz);
 		if(iBlk == 0)
 		{
-			fprintf(stderr,"Made it here (%d%s)!",2,"a");
+			fprintf(stderr,"Made it here (%d%s)!\n",2,"a");
 		}
 		int bytepos = 0, error = 0;
 		float mulfac = glob_mulfac;
@@ -307,7 +307,7 @@ fprintf(stderr,"Made it here (%d)!",2);
 		Run_Length_Encode_Slow(mulfac,priv_work,bx*by*bz,priv_compressed,bytepos);
 		if(iBlk == 0)
 		{
-			fprintf(stderr,"Made it here (%d%s)!",2,"b");
+			fprintf(stderr,"Made it here (%d%s)!\n",2,"b");
 		}
 		error = (bytepos > (4*bx*by*bz)) ? -1 : 0;
 		//printf("Compressed block is %d bytes (ratio=%.2f:1, error = %d)\n",bytepos,(double)(4*bx*by*bz)/(double)bytepos,error);
@@ -323,6 +323,10 @@ fprintf(stderr,"Made it here (%d)!",2);
 		else
 		{
 			priv_blkoff[*priv_blkstore_idx] = blkoff + bytepos;
+		}
+				if(iBlk == 0)
+		{
+			fprintf(stderr,"Made it here (%d%s)!\n",2,"c");
 		}
 		if (*priv_blkstore_idx >= priv_blkoff_len)
 		{
@@ -351,7 +355,7 @@ fprintf(stderr,"Made it here (%d)!",2);
 			priv_blkoff[0] = 0;
 		}
 	}
-	fprintf(stderr,"Made it here (%d)!",3);
+	fprintf(stderr,"Made it here (%d)!\n",3);
 	for (int thread_id = 0;  thread_id < num_threads;  ++thread_id)
 	{
 		GET_PRIVATE_POINTERS(work,thread_id);
@@ -381,7 +385,7 @@ fprintf(stderr,"Made it here (%d)!",2);
                         priv_blkoff[0] = 0;
 		}
 	}
-	fprintf(stderr,"Made it here (%d)!",4);
+	fprintf(stderr,"Made it here (%d)!\n",4);
 	compressed_length = 32 + 8*nnn + byte_offset + 7;
 	if (use_local_RMS) compressed_length += 4*nnn;
 
