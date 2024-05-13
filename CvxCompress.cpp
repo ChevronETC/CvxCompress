@@ -269,7 +269,7 @@ float CvxCompress::Compress(
 	long byte_offset = 0l;
 
 fprintf(stderr,"Made it here (%d)!\n",2);
-#pragma omp parallel for schedule(dynamic)
+// #pragma omp parallel for schedule(dynamic)
 	for (long iBlk = 0;  iBlk < nnn;  ++iBlk)
 	{
 		long iiz = iBlk / (nbx*nby);
@@ -324,7 +324,7 @@ fprintf(stderr,"Made it here (%d)!\n",2);
 			// copy compressed blocks from private area to global area.
 			int priv_blklen = priv_blkoff[*priv_blkstore_idx];
 			char* glob_dst = 0L;
-#pragma omp critical
+// #pragma omp critical
 			{
 				glob_dst = ((char*)bytes) + byte_offset;
 				byte_offset += (long)priv_blklen;
