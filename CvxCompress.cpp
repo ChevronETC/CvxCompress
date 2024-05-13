@@ -292,7 +292,7 @@ fprintf(stderr,"Made it here (%d)!\n",2);
 
 		Copy_To_Block(vol,x0,y0,z0,nx,ny,nz,(__m128*)priv_work,bx,by,bz);
 		Wavelet_Transform_Fast_Forward((__m256*)priv_work,(__m256*)priv_tmp,bx,by,bz);
-		fprintf(stderr,"Made it here blk %d of %d, (%d%s)!\n",iBlk,nnn,2,"a");
+		fprintf(stderr,"Made it here blk %d of %d with blklen %d, (%d%s)!\n",iBlk,nnn,priv_blklen,2,"a");
 		int bytepos = 0, error = 0;
 		float mulfac = glob_mulfac;
 		if (use_local_RMS)
@@ -302,7 +302,7 @@ fprintf(stderr,"Made it here (%d)!\n",2);
 			blkmulfac[iBlk] = mulfac;
 		}
 		Run_Length_Encode_Slow(mulfac,priv_work,bx*by*bz,priv_compressed,bytepos);
-		fprintf(stderr,"Made it here blk %d of %d, (%d%s)!\n",iBlk,nnn,2,"b");
+		fprintf(stderr,"Made it here blk %d of %d with blklen %d, (%d%s)!\n",iBlk,nnn,priv_blklen,2,"b");
 		error = (bytepos > (4*bx*by*bz)) ? -1 : 0;
 		//printf("Compressed block is %d bytes (ratio=%.2f:1, error = %d)\n",bytepos,(double)(4*bx*by*bz)/(double)bytepos,error);
 		//Run_Length_Encode_Fast(mulfac,priv_work,bx*by*bz,priv_compressed,bytepos,error);
@@ -318,7 +318,7 @@ fprintf(stderr,"Made it here (%d)!\n",2);
 		{
 			priv_blkoff[*priv_blkstore_idx] = blkoff + bytepos;
 		}
-		fprintf(stderr,"Made it here blk %d of %d, (%d%s)!\n",iBlk,nnn,2,"c");
+		fprintf(stderr,"Made it here blk %d of %d with blklen %d, (%d%s)!\n",iBlk,nnn,priv_blklen,2,"c");
 		if (*priv_blkstore_idx >= priv_blkoff_len)
 		{
 			// copy compressed blocks from private area to global area.
@@ -341,12 +341,12 @@ fprintf(stderr,"Made it here (%d)!\n",2);
 				glob_blkoffs[dst_iBlk] = new_glob_blkoff;
 				//printf("  uncompressed=%s, blkoff=%ld, glob_blkoffs[%d]=%ld\n",uncompressed?"true":"false",blkoff,dst_iBlk,glob_blkoffs[dst_iBlk]);
 			}
-			fprintf(stderr,"Made it here blk %d of %d, (%d%s)!\n",iBlk,nnn,2,"d");
+			fprintf(stderr,"Made it here blk %d of %d with blklen %d, (%d%s)!\n",iBlk,nnn,priv_blklen,2,"d");
 			memcpy(glob_dst,priv_compress_buffer,priv_blklen);
-			fprintf(stderr,"Made it here blk %d of %d, (%d%s)!\n",iBlk,nnn,2,"e");
+			fprintf(stderr,"Made it here blk %d of %d with blklen %d, (%d%s)!\n",iBlk,nnn,priv_blklen,2,"e");
 			*priv_blkstore_idx = 0;
 			priv_blkoff[0] = 0;
-			fprintf(stderr,"Made it here blk %d of %d, (%d%s)!\n",iBlk,nnn,2,"f");
+			fprintf(stderr,"Made it here blk %d of %d with blklen %d, (%d%s)!\n",iBlk,nnn,priv_blklen,2,"f");
 
 		}
 	}
