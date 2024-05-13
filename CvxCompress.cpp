@@ -246,7 +246,7 @@ float CvxCompress::Compress(
 	float glob_mulfac = global_rms != 0.0f ? 1.0f / (global_rms * scale) : 1.0f;
 	compressed[6] = *((unsigned int*)&glob_mulfac);
 
-	fprintf(stderr,"Made it here (%d)!\n",1);
+	//fprintf(stderr,"Made it here (%d)!\n",1);
 
 	// flags:
 	// 1 -> use local RMS (global RMS otherwise)
@@ -268,7 +268,7 @@ float CvxCompress::Compress(
 	}
 	long byte_offset = 0l;
 
-fprintf(stderr,"Made it here (%d)!\n",2);
+//fprintf(stderr,"Made it here (%d)!\n",2);
 // #pragma omp parallel for schedule(dynamic)
 	for (long iBlk = 0;  iBlk < nnn;  ++iBlk)
 	{
@@ -292,7 +292,7 @@ fprintf(stderr,"Made it here (%d)!\n",2);
 
 		Copy_To_Block(vol,x0,y0,z0,nx,ny,nz,(__m128*)priv_work,bx,by,bz);
 		Wavelet_Transform_Fast_Forward((__m256*)priv_work,(__m256*)priv_tmp,bx,by,bz);
-		fprintf(stderr,"Made it here blk %d of %d, (%d%s)!\n",iBlk,nnn,2,"a");
+		//fprintf(stderr,"Made it here blk %d of %d, (%d%s)!\n",iBlk,nnn,2,"a");
 		int bytepos = 0, error = 0;
 		float mulfac = glob_mulfac;
 		if (use_local_RMS)
@@ -302,7 +302,7 @@ fprintf(stderr,"Made it here (%d)!\n",2);
 			blkmulfac[iBlk] = mulfac;
 		}
 		Run_Length_Encode_Slow(mulfac,priv_work,bx*by*bz,priv_compressed,bytepos);
-		fprintf(stderr,"Made it here blk %d of %d, (%d%s)!\n",iBlk,nnn,2,"b");
+		//fprintf(stderr,"Made it here blk %d of %d, (%d%s)!\n",iBlk,nnn,2,"b");
 		error = (bytepos > (4*bx*by*bz)) ? -1 : 0;
 		//printf("Compressed block is %d bytes (ratio=%.2f:1, error = %d)\n",bytepos,(double)(4*bx*by*bz)/(double)bytepos,error);
 		//Run_Length_Encode_Fast(mulfac,priv_work,bx*by*bz,priv_compressed,bytepos,error);
@@ -318,7 +318,7 @@ fprintf(stderr,"Made it here (%d)!\n",2);
 		{
 			priv_blkoff[*priv_blkstore_idx] = blkoff + bytepos;
 		}
-		fprintf(stderr,"Made it here blk %d of %d, (%d%s)!\n",iBlk,nnn,2,"c");
+		//fprintf(stderr,"Made it here blk %d of %d, (%d%s)!\n",iBlk,nnn,2,"c");
 		if (*priv_blkstore_idx >= priv_blkoff_len)
 		{
 			// copy compressed blocks from private area to global area.
@@ -341,16 +341,16 @@ fprintf(stderr,"Made it here (%d)!\n",2);
 				glob_blkoffs[dst_iBlk] = new_glob_blkoff;
 				//printf("  uncompressed=%s, blkoff=%ld, glob_blkoffs[%d]=%ld\n",uncompressed?"true":"false",blkoff,dst_iBlk,glob_blkoffs[dst_iBlk]);
 			}
-			fprintf(stderr,"Made it here blk %d of %d with blklen %d, (%d%s)!\n",iBlk,nnn,priv_blklen,2,"d");
+			//fprintf(stderr,"Made it here blk %d of %d with blklen %d, (%d%s)!\n",iBlk,nnn,priv_blklen,2,"d");
 			memcpy(glob_dst,priv_compress_buffer,priv_blklen);
-			fprintf(stderr,"Made it here blk %d of %d with blklen %d, (%d%s)!\n",iBlk,nnn,priv_blklen,2,"e");
+			//fprintf(stderr,"Made it here blk %d of %d with blklen %d, (%d%s)!\n",iBlk,nnn,priv_blklen,2,"e");
 			*priv_blkstore_idx = 0;
 			priv_blkoff[0] = 0;
-			fprintf(stderr,"Made it here blk %d of %d with blklen %d, (%d%s)!\n",iBlk,nnn,priv_blklen,2,"f");
+			//fprintf(stderr,"Made it here blk %d of %d with blklen %d, (%d%s)!\n",iBlk,nnn,priv_blklen,2,"f");
 
 		}
 	}
-	fprintf(stderr,"Made it here (%d)!\n",3);
+	//fprintf(stderr,"Made it here (%d)!\n",3);
 	for (int thread_id = 0;  thread_id < num_threads;  ++thread_id)
 	{
 		GET_PRIVATE_POINTERS(work,thread_id);
@@ -380,7 +380,7 @@ fprintf(stderr,"Made it here (%d)!\n",2);
                         priv_blkoff[0] = 0;
 		}
 	}
-	fprintf(stderr,"Made it here (%d)!\n",4);
+	//fprintf(stderr,"Made it here (%d)!\n",4);
 	compressed_length = 32 + 8*nnn + byte_offset + 7;
 	if (use_local_RMS) compressed_length += 4*nnn;
 
