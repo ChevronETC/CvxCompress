@@ -1,3 +1,5 @@
+#include <stdbool.h>
+
 #ifndef CVX_CVXCOMPRESS_HXX
 #define CVX_CVXCOMPRESS_HXX
 
@@ -173,8 +175,9 @@ float cvx_compress_th(
     int bx,
     int by,
     int bz,
+    bool use_local_RMS,
     unsigned int* compressed,
-	int num_threads,
+    int num_threads,
     long* compressed_length
 );
 

@@ -1295,12 +1295,13 @@ cvx_compress_th(
 	int           bx,
 	int           by,
 	int           bz,
+	bool          use_local_RMS,
 	unsigned int *compressed,
 	int           num_threads,
 	long         *compressed_length)
 {
 	CvxCompress c;
-	return c.Compress(scale, vol, nx, ny, nz, bx, by, bz, false, compressed, num_threads, *compressed_length);
+	return c.Compress(scale, vol, nx, ny, nz, bx, by, bz, use_local_RMS, compressed, num_threads, *compressed_length);
 }
 
 void 
