@@ -289,6 +289,9 @@ float CvxCompress::Compress(
 	compressed[5] = bz;
 	
 	float glob_mulfac = global_rms != 0.0f ? 1.0f / (global_rms * scale) : 1.0f;
+	// Some combinations of scale and global_rms lead to Inf when global_rms is very small
+	// breaking decompression.
+	glob_mulfac = !isfinite(glob_mulfac) ? 1.0f : glob_mulfac;
 	compressed[6] = *((unsigned int*)&glob_mulfac);
 	// printf("nx=%d, ny=%d, nz=%d, bx=%d, by=%d, bz=%d, mulfac=%e\n",nx,ny,nz,bx,by,bz,glob_mulfac);
 
