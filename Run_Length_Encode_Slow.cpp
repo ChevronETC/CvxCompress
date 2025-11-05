@@ -412,7 +412,7 @@ int Run_Length_Decode_Slow(float scale, float* vals, int num_expected_vals, unsi
 		}
 		else
 		{
-			int ival = *p;
+			int ival = (signed char)*p;
 			if (ival > VLESC2 && ival < RLESC3)
 			{
 #ifdef DEBUG_DECODE
