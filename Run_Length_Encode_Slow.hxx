@@ -27,6 +27,9 @@ Run_Length_Encode_Slow(
 /*!
  * Decode array of floats that was encoded with Run_Length_Encode_Slow.
  *
+ * Returns the number of values decoded, or -1 if the stream encoded a run
+ * longer than num_expected_vals. In that case the write is clamped to the
+ * caller's array and its contents should not be trusted.
  */
 int 
 Run_Length_Decode_Slow(

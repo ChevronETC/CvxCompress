@@ -525,7 +525,9 @@ void CvxCompress::Decompress(
 	float* work;
 	posix_memalign((void**)&work, 64, sizeof(float)*work_size);
 
-#pragma omp parallel for
+	long num_malformed = 0;
+
+#pragma omp parallel for reduction(+:num_malformed)
 	for (long iBlk = 0;  iBlk < nnn;  ++iBlk)
 	{
 		long iiz = iBlk / (nbx*nby);
@@ -558,7 +560,7 @@ void CvxCompress::Decompress(
 		}
 		else
 		{
-			Run_Length_Decode_Slow(mulfac,priv_work,bx*by*bz,priv_compressed);
+			if (Run_Length_Decode_Slow(mulfac,priv_work,bx*by*bz,priv_compressed) < 0) ++num_malformed;
 			//printf("...Run_Length_Decode_Slow done\n");  fflush(stdout);
 			Wavelet_Transform_Fast_Inverse((__m256*)priv_work,(__m256*)priv_tmp,bx,by,bz);
 			//printf("...Wavelet_Transform_Fast_Inverse done\n");  fflush(stdout);
@@ -568,6 +570,17 @@ void CvxCompress::Decompress(
 	}
 
 	free(work);
+
+	/* A malformed block means the compressed stream did not decode to the expected
+	   number of values. The decoded volume is not trustworthy; say so loudly rather
+	   than returning silently, which is how truncated snapshots used to go unnoticed. */
+	if (num_malformed > 0)
+	{
+		fprintf(stderr,"CvxCompress::Decompress: %ld of %ld blocks had a malformed "
+				"run-length stream; decoded volume is unreliable.\n",
+				num_malformed, (long)nnn);
+		fflush(stderr);
+	}
 }
 
 //

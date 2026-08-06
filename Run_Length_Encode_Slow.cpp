@@ -388,6 +388,7 @@ void Run_Length_Encode_Slow(float scale, float* vals, int num, unsigned long* co
 int Run_Length_Decode_Slow(float scale, float* vals, int num_expected_vals, unsigned long* compressed)
 {
 	int num = 0;
+	int malformed = 0;
 	char* p = (char*)compressed;
 	float scalefac = 1.0f / scale;
 	for (;  num < num_expected_vals;  ++p)
@@ -428,7 +429,15 @@ int Run_Length_Decode_Slow(float scale, float* vals, int num_expected_vals, unsi
 				printf("  RLESC1 rle=%d, num=%d, num_expected_vals=%d\n",rle,num,num_expected_vals);
 				assert(num+rle <= num_expected_vals);
 #endif
-				for (int j = 0;  j < rle;  ++j) vals[num+j] = 0.0f;
+				{
+					/* A malformed stream can encode a run longer than the caller's array.
+					   Clamp the write, and remember that we did so -- see the return value. */
+					int wn = num_expected_vals - num;
+					if (rle < wn) wn = rle;
+					if (wn < 0) wn = 0;
+					if (wn < rle) malformed = 1;
+					for (int j = 0;  j < wn;  ++j) vals[num+j] = 0.0f;
+				}
 				num += rle;
 				p += 1;
 			}
@@ -440,7 +449,15 @@ int Run_Length_Decode_Slow(float scale, float* vals, int num_expected_vals, unsi
 				printf("  RLESC3 rle=%d, num=%d, num_expected_vals=%d\n",rle,num,num_expected_vals);
 				assert(num+rle <= num_expected_vals);
 #endif
-				for (int j = 0;  j < rle;  ++j) vals[num+j] = 0.0f;
+				{
+					/* A malformed stream can encode a run longer than the caller's array.
+					   Clamp the write, and remember that we did so -- see the return value. */
+					int wn = num_expected_vals - num;
+					if (rle < wn) wn = rle;
+					if (wn < 0) wn = 0;
+					if (wn < rle) malformed = 1;
+					for (int j = 0;  j < wn;  ++j) vals[num+j] = 0.0f;
+				}
 				num += rle;
 				p += 3;
 			}
@@ -523,6 +540,10 @@ int Run_Length_Decode_Slow(float scale, float* vals, int num_expected_vals, unsi
 			*/
 		}
 	}
+	/* Report a malformed stream rather than returning a count the caller cannot
+	   distinguish from success. Clamping without signalling would trade an
+	   out-of-bounds write for an undetectable one. */
+	if (malformed) return -1;
 	return num;
 }
 
