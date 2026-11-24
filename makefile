@@ -72,7 +72,7 @@ CUDA_OBJECTS = $(addprefix $(CUDA_DIR)/,src/CvxCompress_CUDA.o src/CvxCompress_C
 	io/Read_Raw_Volume.o io/Write_Raw_Volume.o)
 
 libcudacvxcompress.$(LIB_EXT): $(CUDA_OBJECTS)
-	$(NVCC) -shared -o $@ $(CUDA_OBJECTS)
+	$(NVCC) --cudart=shared -shared -o $@ $(CUDA_OBJECTS)
 
 $(CUDA_DIR)/src/CvxCompress_CUDA.o: $(CUDA_DIR)/src/CvxCompress_CUDA_helpers.cuh \
 	$(CUDA_DIR)/include/CvxCompress_CUDA.hxx $(wildcard $(CUDA_DIR)/include/Common/*.h)
